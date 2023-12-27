@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './Button.module.css';
+import { useUpdateCommentCountMutation } from '../../redux/commentApi';
 
 export const Button = ({ children, counter, role = 'thumbsUp', id }) => {
   const variants = {
@@ -9,8 +10,29 @@ export const Button = ({ children, counter, role = 'thumbsUp', id }) => {
     [styles.thumbsDown]: role === 'thumbsDown',
   };
 
-  const onBtnHandleClick = () => {
-    console.log('click');
+  const [updateCommentCount, {isLoading}] = useUpdateCommentCountMutation();
+
+  const onBtnHandleClick = async() => {
+
+    // switch (role) {
+    //   case "thumbsUp":
+    //     updateCommentCount({id, thumbsUp: counter + 1})
+    //     break;
+    //   case "thumbsDown":
+    //     updateCommentCount({id, thumbsDown: counter + 1})
+    //     break;
+    
+    //   default:
+    //     break;
+    // }
+try {
+  await updateCommentCount({
+      id, [role]: counter + 1,
+    })
+} catch (error) {
+  console.log(error.message);
+}
+
   };
 
   return (
@@ -24,7 +46,7 @@ export const Button = ({ children, counter, role = 'thumbsUp', id }) => {
       {children}
 
       <span className={styles.counter}>
-        <span></span>
+        <span>{ isLoading && "..."}</span>
         {counter}
       </span>
     </button>

@@ -2,19 +2,33 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { BiMailSend } from 'react-icons/bi';
 import styles from './Form.module.css';
+import { useAddCommentMutation } from '../../redux/commentApi';
 
 export const Form = () => {
   const [author, setAuthor] = useState('');
   const [content, setContent] = useState('');
-
+  const [addComment, {isLoading}] = useAddCommentMutation();
   const onHandleChange = (e) => {
     const { name, value } = e.target;
-    console.log(name, value);
+    switch (name) {
+      case "name":
+        setAuthor(value)
+        break;
+    case "text":
+        setContent(value)
+        break;
+      default:
+        break;
+    }
   };
 
   const onHandleSubmit = (e) => {
     e.preventDefault();
-
+    addComment({
+      author,
+      content,
+    })
+    toast.success("Comment is added")
     setAuthor('');
     setContent('');
   };
@@ -46,7 +60,7 @@ export const Form = () => {
 
         <button className={styles.formBtn}>
           <BiMailSend className={styles.icon} />
-          Send
+          {isLoading ? <p>is loading</p> : <p>Send</p>}
         </button>
       </form>
     </div>

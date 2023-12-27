@@ -9,7 +9,28 @@ export const commentApi = createApi({
     baseUrl: BASE_URL,
   }),
   tagTypes: ["Comments"],
-  endpoints: (builder) => ({}),
+  endpoints: (builder) => ({
+    getComments: builder.query({
+      query: () => API_ENDPOINT,
+      providesTags: ["Comments"]
+    }),
+    addComment: builder.mutation({
+      query: (data) => ({
+        url: API_ENDPOINT,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ['Comments'],
+    }),
+        updateCommentCount: builder.mutation({
+      query: ({id, ...data}) => ({
+        url: `${API_ENDPOINT}/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ['Comments'],
+    })
+  }),
 });
 
-export const {} = commentApi;
+export const {useGetCommentsQuery, useAddCommentMutation, useUpdateCommentCountMutation} = commentApi;
